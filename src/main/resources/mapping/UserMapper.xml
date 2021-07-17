@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="movie.mapper.UserMapper">
+
+    <sql id="queryFields">
+     select user_id,user_name,user_age,user_sex
+      from  tb_user
+    </sql>
+
+    <sql id="queryCondition">
+        <trim prefix="where"  prefixOverrides="and|or">
+            <if test="user_id            != null and user_id              !=''">and user_id=#{user_id}</if>
+            <if test="user_name          != null and user_name            !=''">and user_name  like '%${user_name}%'</if>
+            <if test="user_age         != null and user_age           !=''">and user_age=#{user_age}</if>
+            <if test="user_sex         != null and user_sex           !=''">and user_sex=#{user_sex}</if>
+        </trim>
+    </sql>
+
+    <select id="selectUserCount" parameterType="hashmap" resultType="int">
+        select count(*)
+        from tb_user
+        <include refid="queryCondition" />
+    </select>
+
+    <select id="selectUserList" parameterType="hashmap" resultType="hashmap">
+        <include refid="queryFields" />
+        <include refid="queryCondition" />
+        order by user_id ASC
+        <if test="start != null  and pageSize != null ">
+            limit #{start}, #{pageSize}
+        </if>
+    </select>
+
+    <!--<select id="selectUserList" resultType="hashmap">
+        select * from  tb_user
+    </select>-->
+
+
+    <insert id="insertUser" parameterType="hashmap" keyProperty="USER_ID" useGeneratedKeys="true">
+        insert into tb_user (
+        <trim suffix="" suffixOverrides=",">
+            <if test="USER_NAME != null">USER_NAME,</if>
+            <if test="USER_AGE != null">USER_AGE,</if>
+            <if test="USER_SEX != null">USER_SEX,</if>
+        </trim>)
+        values(
+        <trim suffix="" suffixOverrides=",">
+            <if test="USER_NAME != null">#{USER_NAME},</if>
+            <if test="USER_AGE != null">#{USER_AGE},</if>
+            <if test="USER_SEX != null">#{USER_SEX},</if>
+        </trim>)
+    </insert>
+
+    <delete id="deleteUserByIds" parameterType="java.util.List">
+        delete from tb_user where user_id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+
+    <insert id="insertVideo" parameterType="hashmap" keyProperty="video_id" useGeneratedKeys="true">
+        insert into tb_video (
+        <trim suffix="" suffixOverrides=",">
+            <if test="video_title != null">video_title,</if>
+            <if test="video_upload_time != null">video_upload_time,</if>
+            <if test="video_img_url != null">video_img_url,</if>
+            <if test="video_movie_url != null">video_movie_url,</if>
+        </trim>)
+        values(
+        <trim suffix="" suffixOverrides=",">
+            <if test="video_title != null">#{video_title},</if>
+            <if test="video_upload_time != null">#{video_upload_time},</if>
+            <if test="video_img_url != null">#{video_img_url},</if>
+            <if test="video_movie_url != null">#{video_movie_url},</if>
+        </trim>)
+    </insert>
+</mapper>
