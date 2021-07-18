@@ -76,4 +76,23 @@
             <if test="video_movie_url != null">#{video_movie_url},</if>
         </trim>)
     </insert>
+
+    <insert id="insertListVideo" parameterType="java.util.List" keyProperty="video_id" useGeneratedKeys="true">
+        insert into tb_video (VIDEO_TITLE, VIDEO_UPLOAD_TIME,VIDEO_IMG_URL,VIDEO_MOVIE_URL,video_size)
+        <foreach collection="list" separator=" union all " item="item" index="index">
+            SELECT #{item.video_title}, #{item.video_upload_time},#{item.video_img_url},#{item.video_movie_url},#{item.video_size}  FROM DUAL
+        </foreach>
+    </insert>
+
+    <select id="selectVideoList" resultType="hashmap">
+        SELECT
+            tb_video.video_id,
+            tb_video.video_title,
+            tb_video.video_upload_time,
+            tb_video.video_img_url,
+            tb_video.video_movie_url,
+            tb_video.video_size
+        FROM
+            tb_video
+    </select>
 </mapper>

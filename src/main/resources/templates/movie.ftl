@@ -66,54 +66,61 @@
             }
         }
     }
-    // function add(){
-    //     s.push(count);
-    //     let all = $("#all");
-    //     let a1 = "";
-    //     a1+='<div id="container'+count+'">';
-    //     a1+='<p>视频标题：<input type="text" name="video_title'+count+'"></p>';
-    //     a1+='视频封面：<input type="file" name="attrs" id="attr1'+count+'" onblur="checkImg(this)"> <span>   请长传封面</span>';
-    //     a1+='<p>视频地址：<input type="file" name="attrs" id="attr2'+count+'" onblur="checkVideo(this)"></p> <span>   请长传视频</span>';
-    //     a1+='<p><input type="button" id="del'+count+'" value="删除" onclick="del('+count+')"></p>';
-    //     a1+='<hr size="3" color="pink">';
-    //     a1+='</div>';
-    //     all.append(a1);
-    //     count++;
-    // }
     function add(){
-        let all = document.getElementById("all");
-
-        let div_result = document.createElement("div");
-        div_result.setAttribute("id","container"+count);
-
-        let p1 = document.createElement("p");
-        p1.append("视频标题");
-        let input1 = document.createElement("input");
-        input1.setAttribute("type",'text');
-        input1.setAttribute("name","video_title"+count);
-        p1.appendChild(input1);
-        div_result.appendChild(p1);
-
-        let p2 = document.createElement("p");
-        p2.append("视频封面");
-        let input2 = document.createElement("input");
-        input2.setAttribute("type",'file');
-        input2.setAttribute("name","attr");
-        p2.appendChild(input2);
-        div_result.appendChild(p2);
-
-        let p3 = document.createElement("p");
-        p3.append("视频封面");
-        let input3 = document.createElement("input");
-        input3.setAttribute("type",'file');
-        input3.setAttribute("name","attr");
-        p3.appendChild(input3);
-        div_result.appendChild(p3);
-
-        all.appendChild(div_result);
-
-        ++count;
+        s.push(count);
+        let result = "";
+        for(let i=0;i<s.length;i++){
+            if(s[i]!==undefined){
+                result+=s[i]+",";
+            }
+        }
+        $("#str").val(result);
+        let all = $("#all");
+        let a1 = "";
+        a1+='<div id="container'+count+'">';
+        a1+='<p>视频标题：<input type="text" name="video_title'+count+'"></p>';
+        a1+='视频封面：<input type="file" name="attrs" id="attr1'+count+'" onblur="checkImg(this)"> <span>   请长传封面</span>';
+        a1+='<p>视频地址：<input type="file" name="attrs" id="attr2'+count+'" onblur="checkVideo(this)"></p> <span>   请长传视频</span>';
+        a1+='<p><input type="button" id="del'+count+'" value="删除" onclick="del('+count+')"></p>';
+        a1+='<hr size="3" color="pink">';
+        a1+='</div>';
+        all.append(a1);
+        count++;
     }
+    // function add(){
+    //     let all = document.getElementById("all");
+    //
+    //     let div_result = document.createElement("div");
+    //     div_result.setAttribute("id","container"+count);
+    //
+    //     let p1 = document.createElement("p");
+    //     p1.append("视频标题");
+    //     let input1 = document.createElement("input");
+    //     input1.setAttribute("type",'text');
+    //     input1.setAttribute("name","video_title"+count);
+    //     p1.appendChild(input1);
+    //     div_result.appendChild(p1);
+    //
+    //     let p2 = document.createElement("p");
+    //     p2.append("视频封面");
+    //     let input2 = document.createElement("input");
+    //     input2.setAttribute("type",'file');
+    //     input2.setAttribute("name","attr");
+    //     p2.appendChild(input2);
+    //     div_result.appendChild(p2);
+    //
+    //     let p3 = document.createElement("p");
+    //     p3.append("视频封面");
+    //     let input3 = document.createElement("input");
+    //     input3.setAttribute("type",'file');
+    //     input3.setAttribute("name","attr");
+    //     p3.appendChild(input3);
+    //     div_result.appendChild(p3);
+    //
+    //     all.appendChild(div_result);
+    //
+    //     ++count;
+    // }
     function del(index){
         delete s[index];
         let result = "";

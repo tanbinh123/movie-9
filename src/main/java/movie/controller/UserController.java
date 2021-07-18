@@ -2,6 +2,7 @@ package movie.controller;
 
 import movie.chat.ChatDao;
 import movie.service.IUserService;
+import movie.util.ToolUtil;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,13 +32,11 @@ public class UserController extends BaseController{
     @RequestMapping("/index")
     public ModelAndView index(HttpServletRequest request){
         Map<String, Object> paramMap = getParamMap(request);
-        System.out.println(paramMap);
         getSelectTableList(paramMap,userService.selectUserCount(paramMap)).put("list",userService.selectUserList(paramMap));
-        System.out.println(paramMap);
         return new ModelAndView("index", paramMap);
     }
 
-    @RequestMapping("/register")
+    @RequestMapping(value = "/insertUser", method = RequestMethod.GET)
     public String register(){
         return "register";
     }
@@ -55,6 +54,9 @@ public class UserController extends BaseController{
         userService.deleteUserByIds(getParamList(request,new StringBuilder("data")));
         return "redirect:/index";
     }
+
+
+
 
     @RequestMapping(value = "ajax")
     public String ajax(){
@@ -113,48 +115,48 @@ public class UserController extends BaseController{
         return list;
     }
 
-    @RequestMapping(value = "/chat", method = RequestMethod.GET)
-    public  String  chat(HttpServletRequest request){
-        return "chat";
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public  String  login(HttpServletRequest request){
-        return "login";
-    }
-
-    @RequestMapping(value = "/checkNick", method = RequestMethod.GET)
-    public  @ResponseBody String  checkNick(HttpServletRequest request){
-        return ChatDao.checkNickIsHave(request);
-    }
-
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public  String  login1(HttpServletRequest request){
-        request.getSession().setAttribute("nick",request.getParameter("nick"));
-        ChatDao.nickList.add(request.getParameter("nick"));
-        return "redirect:/chat";
-    }
-
-    //loadNickList
-    @RequestMapping(value = "/loadNickList", method = RequestMethod.GET)
-    public  @ResponseBody List<String> loadNickList(HttpServletRequest request) {
-        return ChatDao.nickList;
-    }
-
-    @RequestMapping(value = "/loadInfoList", method = RequestMethod.GET)
-    public  @ResponseBody List<String> loadInfoList(HttpServletRequest request) {
-        return ChatDao.infoList;
-    }
-
-    @RequestMapping(value = "/sendMessage", method=RequestMethod.POST)
-    @ResponseBody
-    public String sendMessage(HttpServletRequest request) {
-        System.out.println("send");
-        if(request.getParameter("nick")==null || request.getParameter("message").toString().equals(""))
-            return "0";
-        ChatDao.getInfoList(request);
-        return "1";
-    }
+//    @RequestMapping(value = "/chat", method = RequestMethod.GET)
+//    public  String  chat(HttpServletRequest request){
+//        return "chat";
+//    }
+//
+//    @RequestMapping(value = "/login", method = RequestMethod.GET)
+//    public  String  login(HttpServletRequest request){
+//        return "login";
+//    }
+//
+//    @RequestMapping(value = "/checkNick", method = RequestMethod.GET)
+//    public  @ResponseBody String  checkNick(HttpServletRequest request){
+//        return ChatDao.checkNickIsHave(request);
+//    }
+//
+//    @RequestMapping(value = "/login", method = RequestMethod.POST)
+//    public  String  login1(HttpServletRequest request){
+//        request.getSession().setAttribute("nick",request.getParameter("nick"));
+//        ChatDao.nickList.add(request.getParameter("nick"));
+//        return "redirect:/chat";
+//    }
+//
+//    //loadNickList
+//    @RequestMapping(value = "/loadNickList", method = RequestMethod.GET)
+//    public  @ResponseBody List<String> loadNickList(HttpServletRequest request) {
+//        return ChatDao.nickList;
+//    }
+//
+//    @RequestMapping(value = "/loadInfoList", method = RequestMethod.GET)
+//    public  @ResponseBody List<String> loadInfoList(HttpServletRequest request) {
+//        return ChatDao.infoList;
+//    }
+//
+//    @RequestMapping(value = "/sendMessage", method=RequestMethod.POST)
+//    @ResponseBody
+//    public String sendMessage(HttpServletRequest request) {
+//        System.out.println("send");
+//        if(request.getParameter("nick")==null || request.getParameter("message").toString().equals(""))
+//            return "0";
+//        ChatDao.getInfoList(request);
+//        return "1";
+//    }
 
     //跳转upload页面
     @RequestMapping(value = "/upload", method=RequestMethod.GET)
@@ -163,23 +165,23 @@ public class UserController extends BaseController{
         return "upload";
     }
     //执行上传的代码One
-    @RequestMapping(value = "/uploadOne", method=RequestMethod.POST)
-    public ModelAndView uploadOne(@RequestParam("attr") MultipartFile file, HttpServletRequest request) throws IOException {
-        Map<String,Object> map = getParamMap(request);
-        String url = uploadOneFile(file,request);
-        System.out.println(url);
-        map.put("url",url);
-        return new ModelAndView("photo",map);
-    }
+//    @RequestMapping(value = "/uploadOne", method=RequestMethod.POST)
+//    public ModelAndView uploadOne(@RequestParam("attr") MultipartFile file, HttpServletRequest request) throws IOException {
+//        Map<String,Object> map = getParamMap(request);
+//        String url = uploadOneFile(file,request);
+//        System.out.println(url);
+//        map.put("url",url);
+//        return new ModelAndView("photo",map);
+//    }
     //执行上传的代码More
-    @RequestMapping(value = "/uploadMore", method=RequestMethod.POST)
-    public ModelAndView uploadMore(@RequestParam("attrs") List<MultipartFile> files, HttpServletRequest request) throws IOException {
-        Map<String,Object> map = getParamMap(request);
-        List<String> urls = uploadMoreFile(files,request);
-        System.out.println(urls);
-        map.put("urls",urls);
-        return new ModelAndView("photo",map);
-    }
+//    @RequestMapping(value = "/uploadMore", method=RequestMethod.POST)
+//    public ModelAndView uploadMore(@RequestParam("attrs") List<MultipartFile> files, HttpServletRequest request) throws IOException {
+//        Map<String,Object> map = getParamMap(request);
+//        List<String> urls = uploadMoreFile(files,request);
+//        System.out.println(urls);
+//        map.put("urls",urls);
+//        return new ModelAndView("photo",map);
+//    }
 
     //跳转movie页面
     @RequestMapping(value = "/movie", method=RequestMethod.GET)
@@ -189,28 +191,43 @@ public class UserController extends BaseController{
     }
     //执行上传的代码More
     @RequestMapping(value = "/uploadMovie", method=RequestMethod.POST)
-    public ModelAndView uploadMovie(@RequestParam("attrs") List<MultipartFile> files, HttpServletRequest request) throws IOException {
+    public String uploadMovie(@RequestParam("attrs") List<MultipartFile> files, HttpServletRequest request) throws IOException {
         Map<String,Object> map = getParamMap(request);
-        List<String> urls = uploadMoreFile(files,request);
+        List<List<Object>> informations = uploadMoreFile(files, request);
+
         StringBuffer stringBuffer = new StringBuffer(map.get("str").toString());
         String[] split = stringBuffer.toString().split(",");
+        List<Map<String,Object>> datalist=new ArrayList<Map<String,Object>>();
         //循环插入
         for(int i=0; i< split.length; i++){//循环两次插入，第一次的insert into 要拿到List的前面两个值索引号为0和1的
             String video_title = map.get("video_title"+split[i]).toString();//拿到视频标题值
             Date video_upload_time = new Timestamp(System.currentTimeMillis());//视频的上传的时间
-            String video_img_url = urls.get(i*2);
-            String video_movie_url = urls.get(i*2+1);
+            String video_img_url = (String) informations.get(i*2).get(0);
+            String video_movie_url = (String) informations.get(i*2+1).get(0);
+            long video_size = (long) informations.get(i*2+1).get(1);//获取视频的大小
             Map<String,Object> mapDate = new HashMap<>();
             mapDate.put("video_title",video_title);
             mapDate.put("video_upload_time",video_upload_time);
             mapDate.put("video_img_url",video_img_url);
             mapDate.put("video_movie_url",video_movie_url);
+            mapDate.put("video_size",video_size);
             System.out.println("data"+mapDate);
-            userService.insertVideo(mapDate);
+            datalist.add(mapDate);
         }
-        System.out.println(urls);
-        map.put("urls",urls);
-        return new ModelAndView("photo",map);
+        //批量插入
+        int count = userService.insertListVideo(datalist);
+        System.out.println(count);
+        return "redirect:/selectVideoList";
+    }
+
+    //selectVideoList
+    @RequestMapping(value = "/selectVideoList", method = RequestMethod.GET)
+    public  ModelAndView  selectVideoList(HttpServletRequest request){
+        List<Map<String,Object>> list=userService.selectVideoList();
+        Map<String,Object> map=new HashMap<String,Object>();
+        map.put("list",list);
+        map.put("space", ToolUtil.spaceInfo());
+        return new ModelAndView("videoList",map);
     }
 
     public static void main(String[] args) {

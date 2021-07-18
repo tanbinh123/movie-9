@@ -32,6 +32,7 @@ public class BaseController {
         return list;
     }
 
+    //用来组装除了List之外的分页参数
     public Map<String, Object> getSelectTableList(Map<String, Object> paramMap,int totalCount){
         if(paramMap.get("pageSize") != null && paramMap.get("pageIndex") != null){
             int pageSize = Integer.parseInt(paramMap.get("pageSize").toString());
@@ -48,12 +49,13 @@ public class BaseController {
         return paramMap;
     }
 
-    public String uploadOneFile(MultipartFile file, HttpServletRequest request) throws IOException {
+    public List<Object> uploadOneFile(MultipartFile file, HttpServletRequest request) throws IOException {
         String newFileName = null;
-        InputStream in = null;
-        FileOutputStream out = null;
+        InputStream in = null;//声明输入流
+        FileOutputStream out = null;//声明文件输出流
+        List<Object> fileInformation = new ArrayList<>();//文件的信息
         try {
-            String filename = file.getOriginalFilename();
+            String filename = file.getOriginalFilename();//得到文件的名称
             //获取后缀名 .jpg
             String suffixName = filename.substring(filename.lastIndexOf("."));
             newFileName = "/img/"+UUID.randomUUID().toString()+suffixName;
@@ -62,6 +64,8 @@ public class BaseController {
             in = file.getInputStream();
             out = new FileOutputStream(path);
             IOUtils.copy(in,out);
+            fileInformation.add(newFileName);//文件的地址
+            fileInformation.add(file.getSize());//每个文件的大小
         }catch (IOException e){
             System.out.println(e);
         }finally {
@@ -70,14 +74,14 @@ public class BaseController {
         }
 
         System.out.println("onload1");
-        return newFileName;
+        return fileInformation;
     }
 
-    public List<String> uploadMoreFile(List<MultipartFile> files, HttpServletRequest request) throws IOException {
-        List<String> fileNames = new ArrayList<>();
+    public List<List<Object>> uploadMoreFile(List<MultipartFile> files, HttpServletRequest request) throws IOException {
+        List<List<Object>> fileInformation = new ArrayList<>();
         for(MultipartFile file:files){
-            fileNames.add(uploadOneFile(file,request));
+            fileInformation.add(uploadOneFile(file,request));
         }
-        return fileNames;
+        return fileInformation;
     }
 }

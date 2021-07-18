@@ -2,6 +2,7 @@ package movie.service.Impl;
 
 import movie.mapper.UserMapper;
 import movie.service.IUserService;
+import movie.util.ToolUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,26 @@ public class USerServiceImpl implements IUserService {
         int id = userMapper.insertVideo(map);
         System.out.println("sql:"+id);
         return id;
+    }
+
+    @Override
+    public int insertListVideo(List<Map<String, Object>> list) {
+        return userMapper.insertListVideo(list);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectVideoList() {
+        List<Map<String,Object>> list=userMapper.selectVideoList();
+        //String name1= ToolUtil.getFileSuffixName(name);
+        for(int i=0;i<list.size();i++){
+            Map<String,Object> map=list.get(i);
+            String name=map.get("video_movie_url").toString();
+            //获取后缀
+            String name1= ToolUtil.getFileSuffixName(name);
+            map.put("suffixName",name1);
+        }
+        System.out.println(list);
+        return list;
     }
 
 

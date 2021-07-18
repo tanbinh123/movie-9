@@ -14,4 +14,7 @@ public interface IUserService {
 
     public int insertVideo(Map<String,Object> map);
 
+    public int insertListVideo(List<Map<String,Object>> list);
+
+    public List<Map<String,Object>> selectVideoList();
 }
