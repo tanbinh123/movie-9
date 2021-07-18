@@ -191,14 +191,13 @@ public class UserController extends BaseController{
     @RequestMapping(value = "/uploadMovie", method=RequestMethod.POST)
     public ModelAndView uploadMovie(@RequestParam("attrs") List<MultipartFile> files, HttpServletRequest request) throws IOException {
         Map<String,Object> map = getParamMap(request);
-        for(int i=0; i<files.size(); i++){
-            System.out.println(files.get(i).getOriginalFilename());
-        }
         List<String> urls = uploadMoreFile(files,request);
+        StringBuffer stringBuffer = new StringBuffer(map.get("str").toString());
+        String[] split = stringBuffer.toString().split(",");
         //循环插入
-        for(int i=0; i<map.size(); i++){
-            String video_title = map.get("video_title"+i).toString();//拿到视频标题值
-            Date video_upload_time = new Timestamp(System.currentTimeMillis());
+        for(int i=0; i< split.length; i++){//循环两次插入，第一次的insert into 要拿到List的前面两个值索引号为0和1的
+            String video_title = map.get("video_title"+split[i]).toString();//拿到视频标题值
+            Date video_upload_time = new Timestamp(System.currentTimeMillis());//视频的上传的时间
             String video_img_url = urls.get(i*2);
             String video_movie_url = urls.get(i*2+1);
             Map<String,Object> mapDate = new HashMap<>();
@@ -207,7 +206,7 @@ public class UserController extends BaseController{
             mapDate.put("video_img_url",video_img_url);
             mapDate.put("video_movie_url",video_movie_url);
             System.out.println("data"+mapDate);
-            userService.insertUser(mapDate);
+            userService.insertVideo(mapDate);
         }
         System.out.println(urls);
         map.put("urls",urls);
